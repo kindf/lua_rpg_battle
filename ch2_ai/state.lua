@@ -76,7 +76,7 @@ end
 local IdleState = class("IdleState", State)
 
 function IdleState:StateLogic(pAI, uTime)
-    pAI:AI_Logic_idle(uTime)
+    pAI:AI_Logic_Idle(uTime)
 end
 
 local CombatState = class("CombatState", State)
@@ -106,9 +106,9 @@ end
 
 local g_StateList = StateList.new()
 
-g_StateList:Register(IdleState.new(C.STATE_IDLE))
-g_StateList:Register(CombatState.new(C.STATE_COMBAT))
-g_StateList:Register(DeadState.new(C.STATE_DEAD))
+g_StateList:Register(IdleState.new(C.ESTATE.IDLE))
+g_StateList:Register(CombatState.new(C.ESTATE.COMBAT))
+g_StateList:Register(DeadState.new(C.ESTATE.DEAD))
 
 return {
     State = State,

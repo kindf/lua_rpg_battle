@@ -78,6 +78,6 @@ function ActionDelegator:Tick(uTime)
     end
 end
 
-local g_ActionDDelegator = ActionDelegator.new()
+local g_ActionDelegator = ActionDelegator.new()
 
-return {ActionDelegator = ActionDelegator, g_ActionDDelegator = g_ActionDDelegator}
+return {ActionDelegator = ActionDelegator, g_ActionDelegator = g_ActionDelegator}

@@ -8,7 +8,7 @@ local function class(name, base)
     end
     function cls.new(...)
         local obj = setmetatable({}, cls)
-        if obj.__init then obj:__init(...) end
+        if obj._init then obj:_init(...) end
         return obj
     end
     return cls

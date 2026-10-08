@@ -74,8 +74,8 @@ function Handler.Execute(pPacket, pPlayer)
         return C.PACKET_EXE_CONTINUE
     end
 
-    local idSkill = math.floor(pPacket:getSkillDataId() / 100)
-    local nLevel = pPacket:getSkillDataId() % 100
+    local idSkill = math.floor(pPacket:getSkillDataID() / 100)
+    local nLevel = pPacket:getSkillDataID() % 100
     local idTarget = pPacket:getTargetID()
     local guidTarget = pPacket:getTargetGUID()
     local posTarget = pPacket:getTargetPos()
@@ -87,7 +87,7 @@ function Handler.Execute(pPacket, pPlayer)
 
     local pTarget = pScene:GetObjManager():GetObj(idTarget)
     if pTarget then
-        local pSkillTemplate = Data.g_SkillTemplateDataMgr:GetInstanceById(idSkill)
+        local pSkillTemplate = Data.g_SkillTemplateDataMgr:GetInstanceByID(idSkill)
         local skillType = pSkillTemplate and pSkillTemplate:GetStandFlag() or 0
         if skillType > 0 then
             if pHuman:IsEnemy(pTarget) then
@@ -97,7 +97,7 @@ function Handler.Execute(pPacket, pPlayer)
             end
         elseif skillType < 0 then
             if not pHuman:IsEnemy(pTarget) then
-                Log.err(string.format("%s 与 %s 阵营不同 背面技能被拦截", pHuman:GetName(), pTarget:GetName()))
+                Log.error(string.format("%s 与 %s 阵营不同 背面技能被拦截", pHuman:GetName(), pTarget:GetName()))
                 Log.back(C.PACKET_EXE_CONTINUE)
                 return C.PACKET_EXE_CONTINUE
             end
@@ -124,7 +124,7 @@ function Handler.Execute(pPacket, pPlayer)
         end
     end
 
-    Log.msg(string.format("S:%d D:%d Skill:%s (%.1f,%.1f) DIR=%.1f", pHuman:GetID(), pPacket:getObjID(), idSkill, posTarget.m_fX, posTarget.m_fZ, fDir))
+    Log.msg(string.format("S:%s D:%s Skill:%s (%.1f,%.1f) DIR=%.1f", pHuman:GetID(), pPacket:getObjID(), idSkill, posTarget.m_fX, posTarget.m_fZ, fDir))
     Log.back(C.PACKET_EXE_CONTINUE)
     return C.PACKET_EXE_CONTINUE
 end

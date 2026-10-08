@@ -3,7 +3,7 @@ local C = require("shared.constants")
 local Log = require("shared.log")
 local Data = require("data.game_data")
 local AD = require("ch3_character.action_delegator")
-local StateMod = require("ch2_ai.State")
+local StateMod = require("ch2_ai.state")
 local class = require("shared.class").class
 
 local g_ActionDelegator = AD.g_ActionDelegator
@@ -275,7 +275,7 @@ function AI_Human:AI_Logic_Combat(uTime)
 end
 
 
-function AI_Human:AI_Logic_IDLE(uTime)
+function AI_Human:AI_Logic_Idle(uTime)
     Log.fn("AI_Human:AI_Logic_IDLE")
     Log.back(nil)
 end
