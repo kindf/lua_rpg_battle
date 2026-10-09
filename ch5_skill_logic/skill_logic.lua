@@ -7,7 +7,7 @@ local Targeting = require("ch6_activate.targeting")
 local AD = require("ch3_character.action_delegator")
 local class = require("shared.class").class
 
-local g_ActionDelegator = AD.g_ActionDDelegator
+local g_ActionDelegator = AD.g_ActionDelegator
 
 local CondDep = {}
 CondDep.__index = CondDep
@@ -109,9 +109,9 @@ end
 function SkillLogic_T:CommonConditionCheck(rMe)
     local si = rMe:GetSkillInfo()
     for idx = 0,  C.CONDITION_AND_DEPLETE_TERM_NUMBER - 1 do
-        local term = si.condep_term[idx + 1]
+        local term = si.condep_terms[idx + 1]
         if term then
-            if not g_ConditionAndDepleteCore:Check(rMe, term) then
+            if not g_ConditionAndDepleteCore:ConditionCheck(rMe, term) then
                 return false
             end
         end
@@ -125,7 +125,7 @@ end
 function SkillLogic_T:CommonDeplete(rMe)
     local si = rMe:GetSkillInfo()
     for idx = 0,  C.CONDITION_AND_DEPLETE_TERM_NUMBER - 1 do
-        local term = si.condep_term[idx + 1]
+        local term = si.condep_terms[idx + 1]
         if term then
             if not g_ConditionAndDepleteCore:Deplete(rMe, term) then
                 return false
@@ -287,7 +287,7 @@ function SkillLogic_T:StartChanneling(rMe)
     local params = rMe:GetTargetingAndDepletingParams()
     local nMaxTime = si.channel_time
     if nMaxTime <= 0 then
-        Log.err("引导时间必须大于0")
+        Log.error("引导时间必须大于0")
         params:SetErrCode(C.OR_ERROR)
         Log.back(false)
         return false
@@ -320,7 +320,7 @@ function SkillLogic_T:Action_ActivateOnceHandler(rMe)
     local params = rMe:GetTargetingAndDepletingParams()
 
     if not self:IsConditionSatisfied(rMe) then
-        Log.err("条件不满足 -> OR_LIMIT_USE_SKILL")
+        Log.error("条件不满足 -> OR_LIMIT_USE_SKILL")
         Log.back(false)
         return false
     end
@@ -393,7 +393,7 @@ function SkillLogic_T:ActivateOnce(rMe)
     params:SetTargetCount(#targets)
     Log.msg(string.format("广播目标队列：%s 个目标", #targets))
 
-    for i, pTarget in iparis(targets) do
+    for i, pTarget in ipairs(targets) do
         if hitFlags[i] then
             local bCriticalHit = self:CriticalHitThisTarget(rMe, pTarget)
             self:EffectOnUnitOnce(rMe, pTarget, bCriticalHit)
@@ -419,7 +419,7 @@ function SkillLogic_T:ActivateEachTick(rMe)
             hitFlags[i] = true
         end
     end
-    for i, pTarget in ipaisr(targets) do
+    for i, pTarget in ipairs(targets) do
         if hitFlags[i] then
             local bCriticalHit = self:CriticalHitThisTarget(rMe, pTarget)
             self:EffectOnUnitEachTick(rMe, pTarget, bCriticalHit)

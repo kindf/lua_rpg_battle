@@ -8,12 +8,12 @@ CGCharUseSkill.__index = CGCharUseSkill
 
 function CGCharUseSkill.new(t)
     local o = {}
-    o.m_ObjID = t.m_ObjID
-    o.m_SkillDataID = t.m_SkillDataID -- skillID*100 + skillLevel
+    o.m_ObjID = t.objID
+    o.m_SkillDataID = t.skillDataID -- skillID*100 + skillLevel
     o.m_guidTarget = t.m_guidTarget or C.INVALID_GUID
     o.TargetID = t.targetID
     o.m_posTarget = t.posTarget or {m_fX = 0.0, m_fZ = 0.0}
-    o.m_fDir = t.m_fDir or 0.0
+    o.m_fDir = t.fDir or 0.0
     setmetatable(o, CGCharUseSkill)
     return o
 end
@@ -49,27 +49,27 @@ function Handler.Execute(pPacket, pPlayer)
     Log.fn("CGCharUseSkillHandler::Execute")
 
     if pPlayer == nil then
-        Log.err("pGamePlayer == NULL")
+        Log.error("pGamePlayer == NULL")
         Log.back(C.PACKET_EXE_CONTINUE)
         return C.PACKET_EXE_CONTINUE
     end
 
     local pHuman = pPlayer:GetHuman()
     if pHuman == nil then
-        Log.err("pHuman == NULL")
+        Log.error("pHuman == NULL")
         Log.back(C.PACKET_EXE_CONTINUE)
         return C.PACKET_EXE_CONTINUE
     end
 
     local pScene = pHuman:getScene()
     if pScene == nil then
-        Log.err("pScene == NULL")
+        Log.error("pScene == NULL")
         Log.back(C.PACKET_EXE_CONTINUE)
         return C.PACKET_EXE_CONTINUE
     end
 
     if pScene.m_ThreadID ~= Handler.ThreadID then
-        Log.err("pScene.m_ThreadID != Handler.ThreadID")
+        Log.error("pScene.m_ThreadID != Handler.ThreadID")
         Log.back(C.PACKET_EXE_CONTINUE)
         return C.PACKET_EXE_CONTINUE
     end
@@ -91,7 +91,7 @@ function Handler.Execute(pPacket, pPlayer)
         local skillType = pSkillTemplate and pSkillTemplate:GetStandFlag() or 0
         if skillType > 0 then
             if pHuman:IsEnemy(pTarget) then
-                Log.err(string.format("%s 与 %s 阵营不同 正面技能被拦截", pHuman:GetName(), pTarget:GetName()))
+                Log.error(string.format("%s 与 %s 阵营不同 正面技能被拦截", pHuman:GetName(), pTarget:GetName()))
                 Log.back(C.PACKET_EXE_CONTINUE)
                 return C.PACKET_EXE_CONTINUE
             end

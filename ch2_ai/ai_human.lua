@@ -79,6 +79,9 @@ function AI_Character:Logic(uTime)
     return self._state:Logic(self, uTime)
 end
 
+function AI_Character:IsEnterCombatState()
+    return self._state:GetStateID() == C.ESTATE.COMBAT
+end
 --------------------------------------------------------------
 --- AI_Hunam
 --- --------------------------------------------------------------
@@ -196,7 +199,7 @@ function AI_Human:AI_Logic_Combat(uTime)
             Log.msg("使用队列技能")
             if not self:CheckTargetValid(nQueuedSkill, self.m_paramAI_UseSkill.m_nQueueTargetObjID) then
                 self.m_paramAI_UseSkill:CleanUp()
-                self:ChangeState(C.STATE.IDLE)
+                self:ChangeState(C.ESTATE.IDLE)
                 rMe:SetLockedTarget(C.INVALID_ID)
                 Log.msg("目标已失效 回空闲")
                 Log.back(nil)
@@ -232,7 +235,7 @@ function AI_Human:AI_Logic_Combat(uTime)
             Log.msg("使用自动释放技能", string.format("nAutoActivedSkill=%d", nAutoActivedSkill))
             if not self:CheckTargetValid(nAutoActivedSkill, self.m_paramAI_UseSkill.m_nAutoShotTargetObjID) then
                 self.m_paramAI_UseSkill:CleanUp()
-                self:ChangeState(C.STATE.IDLE)
+                self:ChangeState(C.ESTATE.IDLE)
                 rMe:SetLockedTarget(C.INVALID_ID)
                 Log.msg("目标已失效")
                 Log.back(nil)
@@ -265,7 +268,7 @@ function AI_Human:AI_Logic_Combat(uTime)
                 self.m_paramAI_UseSkill.m_nAutoShotTargetObjID = C.INVALID_ID
             end
         else
-            self:ChangeState(C.STATE.IDLE)
+            self:ChangeState(C.ESTATE.IDLE)
             Log.msg("无待放技能 -> 空闲")
             Log.back(nil)
             return

@@ -5,7 +5,7 @@ local Data = require("data.game_data")
 local SkillLogicMod = require("ch5_skill_logic.skill_logic")
 local AD = require("ch3_character.action_delegator")
 
-local g_ActionDelegator = AD.g_ActionDDelegator
+local g_ActionDelegator = AD.g_ActionDelegator
 
 local SkillCore_T = {}
 SkillCore_T.__index = SkillCore_T
@@ -30,7 +30,7 @@ function SkillCore_T:ProcessSkillRequest(rMe, nSkillID, nLevel, nTargetID, rTarg
 
     if tmpl == nil then
         params:SetErrCode(C.OR_INVALID_SKILL)
-        Log.err("模板不存在 -> OR_INVALID_SKILL")
+        Log.error("模板不存在 -> OR_INVALID_SKILL")
         Log.back(false)
         return false
     end
@@ -43,22 +43,22 @@ function SkillCore_T:ProcessSkillRequest(rMe, nSkillID, nLevel, nTargetID, rTarg
 
     if not rMe:IsAlive() then
         params:SetErrCode(C.OR_DIE)
-        Log.err("已死亡 -> OR_DIE")
+        Log.error("已死亡 -> OR_DIE")
         Log.back(false)
         return false
     end
 
     if not rMe:Skill_CanUseThisSkillInThisStatus(nSkillID) then
         params:SetErrCode(C.OR_LIMIT_USE_SKILL)
-        Log.err("当前状态不允许 -> OR_LIMIT_USE_SKILL")
+        Log.error("当前状态不允许 -> OR_LIMIT_USE_SKILL")
         Log.back(false)
         return false
     end
 
     if rMe:GetObjType() == C.OBJ_TYPE.HUMAN and tmpl:GetClassByUser() == C.CLASS_BY_USER_PLAYER then
-        if (not rMe:Skill_HAveSkill(nSkillID, nLevel)) and (not params:GetIgnoreConditionCheckFlag()) then
+        if (not rMe:Skill_HaveSkill(nSkillID, nLevel)) and (not params:GetIgnoreConditionCheckFlag()) then
             params:SetErrCode(C.OR_INVALID_SKILL)
-            Log.err("角色不会这个技能 -> OR_INVALID_SKILL")
+            Log.error("角色不会这个技能 -> OR_INVALID_SKILL")
             Log.back(false)
             return false
         end
@@ -66,14 +66,14 @@ function SkillCore_T:ProcessSkillRequest(rMe, nSkillID, nLevel, nTargetID, rTarg
 
     if not rMe:Skill_IsSkillCooldowned(nSkillID) then
         params:SetErrCode(C.OR_COOL_DOWNING)
-        Log.err("技能冷却中 -> OR_COOLDOWN")
+        Log.error("技能冷却中 -> OR_COOLDOWN")
         Log.back(false)
         return false
     end
 
     if  not g_ActionDelegator:CanDoNextAction(rMe) then
         params:SetErrCode(C.OR_BUSY)
-        Log.err("正在做其他事 -> OR_LIMIT_USE_SKILL")
+        Log.error("正在做其他事 -> OR_LIMIT_USE_SKILL")
         Log.back(false)
         return false
     end
@@ -83,7 +83,7 @@ function SkillCore_T:ProcessSkillRequest(rMe, nSkillID, nLevel, nTargetID, rTarg
     end
 
     if rMe:GetObjType() == C.OBJ_TYPE.HUMAN then
-        local instId = tmp:GetSkillInstance(nLevel - 1)
+        local instId = tmpl:GetSkillInstance(nLevel - 1)
         local inst = Data.g_SkillInstanceDataMgr:GetInstanceByID(instId)
         if inst == nil then
             params:SetErrCode(C.OR_INVALID_SKILL)
@@ -93,7 +93,7 @@ function SkillCore_T:ProcessSkillRequest(rMe, nSkillID, nLevel, nTargetID, rTarg
 
         if rMe:GetLevel() < (inst.study_level or 0) then
             params:SetErrCode(C.OR_NEED_HIGH_LEVEL_XINFA)
-            Log.err("等级不够 -> OR_NEED_HIGH_LEVEL_XINFA")
+            Log.error("等级不够 -> OR_NEED_HIGH_LEVEL_XINFA")
             Log.back(false)
             return false
         end
@@ -119,7 +119,7 @@ function SkillCore_T:InstanceSkill(rSkillInfoOut, rMe, nSkill, nLevel)
     local params = rMe:GetTargetingAndDepletingParams()
     local tmpl = Data.g_SkillTemplateDataMgr:GetInstanceByID(nSkill)
     if tmpl == nil then
-        Log.err("模板不存在 -> OR_INVALID_SKILL")
+        Log.error("模板不存在 -> OR_INVALID_SKILL")
         Log.back(false)
         return false
     end
@@ -132,7 +132,7 @@ function SkillCore_T:InstanceSkill(rSkillInfoOut, rMe, nSkill, nLevel)
     local instId = tmpl:GetSkillInstance(nLevel - 1)
     local inst = Data.g_SkillInstanceDataMgr:GetInstanceByID(instId)
     if inst == nil then
-        Log.err("实例不存在 -> OR_INVALID_SKILL")
+        Log.error("实例不存在 -> OR_INVALID_SKILL")
         Log.back(false)
         return false
     end
@@ -166,13 +166,13 @@ function SkillCore_T:ActiveSkillNow(rMe)
     if pLogic == nil then
         params:SetErrCode(C.OR_INVALID_SKILL)
         params:SetErrParam(params:GetActivatedSkill())
-        Log.err("找不到技能逻辑 -> OR_INVALID_SKILL")
+        Log.error("找不到技能逻辑 -> OR_INVALID_SKILL")
         Log.back(false)
         return false
     end
     if pLogic:IsPassive() then
         params:SetErrCode(C.OR_ERROR)
-        Log.err("被动技能不能主动释放")
+        Log.error("被动技能不能主动释放")
         Log.back(false)
         return false
     end
@@ -185,15 +185,15 @@ function SkillCore_T:ActiveSkillNow(rMe)
     if (not rMe:Skill_IsSkillCooldowned(params:GetActivatedSkill())) 
         and (not params:GetIgnoreConditionCheckFlag()) then
         params:SetErrCode(C.OR_COOL_DOWNING)
-        Log.err("冷却中 -> OR_COOL_DOWNING")
+        Log.error("冷却中 -> OR_COOL_DOWNING")
         Log.back(false)
         return false
     end
 
     if si.must_use_weapon_flag then
         if rMe:GetObjType() == C.OBJ_TYPE.HUMAN then
-            params:SetErrCode(C.OR_NEED_USE_WEAPON)
-            Log.err("需要使用武器 -> OR_NEED_USE_WEAPON")
+            params:SetErrCode(C.OR_NEED_A_WEAPON)
+            Log.error("需要使用武器 -> OR_NEED_USE_WEAPON")
             Log.back(false)
             return false
         end
@@ -201,12 +201,12 @@ function SkillCore_T:ActiveSkillNow(rMe)
 
     if not params:GetIgnoreConditionCheckFlag() then
         if not pLogic:IsConditionSatisfied(rMe) then
-            Log.err("条件不满足 -> OR_LIMIT_USE_SKILL")
+            Log.error("条件不满足 -> OR_LIMIT_USE_SKILL")
             Log.back(false)
             return false
         end
         if not pLogic:SpecificOperationOnSkillStart(rMe) then
-            Log.err("特殊操作失败 -> OR_LIMIT_USE_SKILL")
+            Log.error("特殊操作失败 -> OR_LIMIT_USE_SKILL")
             Log.back(false)
             return false
         end
@@ -221,7 +221,7 @@ function SkillCore_T:ActiveSkillNow(rMe)
     elseif t == C.SKILL_NEED_CHANNELING then
         pLogic:StartChanneling(rMe)
     else
-        Log.err("不支持的技能类型 -> OR_LIMIT_USE_SKILL")
+        Log.error("不支持的技能类型 -> OR_LIMIT_USE_SKILL")
     end
     Log.back(true)
     return true

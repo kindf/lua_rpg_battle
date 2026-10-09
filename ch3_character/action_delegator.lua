@@ -27,6 +27,17 @@ function ActionDelegator:CanDoNextAction(character)
     end
     return false
 end
+function ActionDelegator:RegisterInstantActionForSkill(rMe, skillID, maxTime, on_done)
+    Log.fn("ActionDelegator::RegisterInstantActionForSkill", string.format("%s skill=%s", rMe.name, skillID))
+    self._actions[rMe:GetID()] = {
+        kind = "instant",
+        skill_id = skillID,
+        end_time = maxTime + self._now,
+        on_done = on_done
+    }
+    Log.back(true)
+    return true
+end
 
 function ActionDelegator:RegisterChargeActionForSkill(rMe, skillID, maxTime, on_done)
     Log.fn("ActionDelegator::RegisterChargeActionForSkill", string.format("%s skill=%s", rMe.name, skillID))

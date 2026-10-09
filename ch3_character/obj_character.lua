@@ -123,7 +123,7 @@ function Obj_Character:Skill_HaveSkill(skillID, level)
     return self.known_skills[skillID] == true
 end
 
-function Obj_Character:Skill_CanUseThisSkillInThisStatue(skillID)
+function Obj_Character:Skill_CanUseThisSkillInThisStatus(skillID)
     return true
 end
 
@@ -169,7 +169,7 @@ function Obj_Character:IsOutOfRange(tar)
 end
 
 function Obj_Character:IsOutOfRangePos(pos)
-    return dist2(self.postion, pos) > (12.0 * 12.0)
+    return dist2(self.position, pos) > (12.0 * 12.0)
 end
 
 -----------------------------------------------------------------
@@ -276,7 +276,7 @@ function Obj_Character:OnHeal(amount, caster)
 end
 
 function Obj_Character:SendOperateResultMsg(code)
-    Log.err(string.format("%s 发送操作结果 %s", self.name, ERR_NAME[code] or code))
+    Log.error(string.format("%s 发送操作结果 %s", self.name, ERR_NAME[code] or code))
 end
 
 return {Obj_Character = Obj_Character}

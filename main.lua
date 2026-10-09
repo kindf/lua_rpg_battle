@@ -1,9 +1,8 @@
-#!/usr/bin/env lua
--- main.lua —— 演示入口
---
 -- 运行：  lua main.lua    (或 luajit main.lua)
+package.cpath = package.cpath .. ";c:/Users/QQ/.vscode/extensions/tangzx.emmylua-0.9.41-win32-x64/debugger/emmy/windows/x64/?.dll"
+local dbg = require("emmy_core")
+-- dbg.tcpConnect("localhost", 9966)
 
--- 让 require("xxx.yyy") 能定位到本目录下的 xxx/yyy.lua
 local function script_dir()
     local str = debug.getinfo(1, "S").source:sub(2)
     return str:match("(.*[/\\])") or "./"
@@ -23,7 +22,7 @@ local AD    = require("ch3_character.action_delegator")
 --------------------------------------------------------------------------------
 -- 场景搭建
 --------------------------------------------------------------------------------
-local function make_world()
+local function MakeWorld()
     local scene = Data.Scene.new(1)
 
     local player = ObjMod.Obj_Character.new({
@@ -62,7 +61,7 @@ end
 local function send_skill(pPlayer, human, skillID, level, targetID, pos, dir)
     local pkt = Net.CGCharUseSkill.new({
         objID = human:GetID(),
-        m_SkillDataID = skillID * 100 + level,
+        skillDataID = skillID * 100 + level,
         targetID = targetID or C.INVALID_ID,
         posTarget = pos or { m_fX = 0.0, m_fZ = 0.0 },
         fDir = dir or 0.0,
@@ -159,7 +158,7 @@ local function main()
 
     for i, sc in ipairs(scenarios) do
         reset_sim()
-        local w = make_world()
+        local w = MakeWorld()
         Log.section(string.format("场景 %d/%d  %s", i, #scenarios, sc.title))
         sc.run(w)
         print(string.format("\n[结果] 玩家A HP=%d MP=%d | 山贼 HP=%d | 山贼乙 HP=%d | 队友B HP=%d",
