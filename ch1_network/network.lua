@@ -109,7 +109,7 @@ function Handler.Execute(pPacket, pPlayer)
     -- 分流技能
     if pPacket:getObjID() == pHuman:GetID() then
         local oResult = pHuman:GetHumanAI():PushCommand_UseSkill(
-            idSkill, nLevel, idTarget, posTarget.m_fX, posTarget.m_fX, fDir, guidTarget
+            idSkill, nLevel, idTarget, posTarget.m_fX, posTarget.m_fZ, fDir, guidTarget
         )
         if C.OR_FAILED(oResult) then
             pHuman:SendOperateResultMsg(oResult)
@@ -119,7 +119,7 @@ function Handler.Execute(pPacket, pPlayer)
         if pPet ~= nil and pPet:GetID() == pPacket:getObjID() then
             Log.msg("使用宠物技能")
             pPet:GetPetAI():PushCommand_UseSkill(
-                idSkill, nLevel, idTarget, posTarget.m_fX, posTarget.m_fX, fDir, guidTarget
+                idSkill, nLevel, idTarget, posTarget.m_fX, posTarget.m_fZ, fDir, guidTarget
             )
         end
     end

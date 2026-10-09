@@ -184,13 +184,37 @@ function AI_Human:PushSkillToQueue(idSkill, nLevel, idTarget, fTargetX, fTargetZ
     Log.back(nil)
 end
 
-function AI_Human:CheckTargetValid(nSkillID, TargetID)
+-- 取技能实例数据（与 SkillCore::InstanceSkill 一致：模板 -> 实例ID -> 实例对象）
+function AI_Human:GetSkillInstanceByLevel(nSkillID, nLevel)
+    local tmpl = Data.g_SkillTemplateDataMgr:GetInstanceByID(nSkillID)
+    if tmpl == nil then
+        return nil
+    end
+    if nLevel == nil or nLevel == 0 then
+        nLevel = 1
+    end
+    local instId = tmpl:GetSkillInstance(nLevel - 1)
+    if instId == nil then
+        return nil
+    end
+    return Data.g_SkillInstanceDataMgr:GetInstanceByID(instId)
+end
+
+function AI_Human:CheckTargetValid(nSkillID, TargetID, nLevel)
     local tmpl = Data.g_SkillTemplateDataMgr:GetInstanceByID(nSkillID)
     if tmpl == nil then
         return false
     end
 
-    if tmpl:GetSelectType() == C.SELECT_TYPE.CHARACTER then
+    -- 读实例数据，与 SkillCore 的校验来源保持一致（select_type 优先取实例，缺省回退模板）
+    local inst = self:GetSkillInstanceByLevel(nSkillID, nLevel)
+    local selectType = (inst and inst.select_type) or tmpl:GetSelectType()
+    local nState = inst and inst.target_must_in_special_state
+    if nState == nil then
+        nState = tmpl:GetTargetMustInSpecialState()
+    end
+
+    if selectType == C.SELECT_TYPE.CHARACTER then
         local pObj = self:GetCharacter():GetSpecificObjInSameSceneByID(TargetID)
         if pObj == nil then
             return false
@@ -199,7 +223,6 @@ function AI_Human:CheckTargetValid(nSkillID, TargetID)
             return false
         end
 
-        local nState = tmpl:GetTargetMustInSpecialState()
         local bMustAlive = (nState == 0 or nState == -1)
         local bMustDead = (nState == 1 or nState == -1)
         local bAlive = pObj:IsAlive()
@@ -232,7 +255,7 @@ function AI_Human:AI_Logic_Combat(uTime)
             self.m_paramAI_UseItem:CleanUp()
         elseif nQueuedSkill ~= C.INVALID_SKILL_ID then
             Log.msg("使用队列技能")
-            if not self:CheckTargetValid(nQueuedSkill, self.m_paramAI_UseSkill.m_nQueueTargetObjID) then
+            if not self:CheckTargetValid(nQueuedSkill, self.m_paramAI_UseSkill.m_nQueueTargetObjID, self.m_paramAI_UseSkill.m_nSkillLevel) then
                 self.m_paramAI_UseSkill:CleanUp()
                 self:ChangeState(C.ESTATE.IDLE)
                 rMe:SetLockedTarget(C.INVALID_ID)
@@ -268,7 +291,7 @@ function AI_Human:AI_Logic_Combat(uTime)
             rMe:SetLockedTarget(self.m_paramAI_UseSkill.m_nQueueTargetObjID)
         elseif nAutoActivedSkill ~= C.INVALID_SKILL_ID then
             Log.msg("使用自动释放技能", string.format("nAutoActivedSkill=%d", nAutoActivedSkill))
-            if not self:CheckTargetValid(nAutoActivedSkill, self.m_paramAI_UseSkill.m_nAutoShotTargetObjID) then
+            if not self:CheckTargetValid(nAutoActivedSkill, self.m_paramAI_UseSkill.m_nAutoShotTargetObjID, self.m_paramAI_UseSkill.m_nSkillLevel) then
                 self.m_paramAI_UseSkill:CleanUp()
                 self:ChangeState(C.ESTATE.IDLE)
                 rMe:SetLockedTarget(C.INVALID_ID)
@@ -327,7 +350,7 @@ function AI_Human:ForceInterruptSkill()
     self.m_paramAI_UseSkill:CleanUp()
     g_ActionDelegator:InterruptCurrentAction(self:GetCharacter())
     if self:GetAIState():GetStateID() ~= C.ESTATE.IDLE then
-        self:ChangeState(C.STATE.IDLE)
+        self:ChangeState(C.ESTATE.IDLE)
     end
 end
 

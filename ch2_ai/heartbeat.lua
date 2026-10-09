@@ -20,7 +20,9 @@ function Heartbeat.Tick(scene, uTime)
 end
 
 function Heartbeat.Run(scene, ticks, dtMs)
-    local t = 0
+    -- 从 ActionDelegator 当前时间续跑，保证多次 Run 调用之间时间单调递增
+    -- （reset_sim 会把 _now 归零，因此每个场景仍从 0 重新开始）
+    local t = g_ActionDelegator:Now()
     for i = 1, ticks do
         t = t + dtMs
         Log.depth = 0

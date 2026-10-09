@@ -42,7 +42,7 @@ function CondDep:Deplete(rMe, term)
             Log.warn(string.format("%s 没有足够的法力 %s/%s", rMe:GetName(), rMe:GetMP(), term.value))
             return false
         end
-        rMe:GetMP(rMe:GetMP() - term.value)
+        rMe:SetMP(rMe:GetMP() - term.value)
         Log.msg(string.format("%s 消耗 %s 法力", rMe:GetName(), term.value))
     elseif term.kind == "rage" then
         if rMe:GetRage() < term.value then
@@ -50,7 +50,7 @@ function CondDep:Deplete(rMe, term)
             Log.warn(string.format("%s 没有足够的怒气 %s/%s", rMe:GetName(), rMe:GetRage(), term.value))
             return false
         end
-        rMe:GetRage(rMe:GetRage() - term.value)
+        rMe:SetRage(rMe:GetRage() - term.value)
         Log.msg(string.format("%s 消耗 %s 怒气", rMe:GetName(), term.value))
     end
     return true
@@ -168,7 +168,7 @@ function SkillLogic_T:TargetCheckForActivateOnce(rMe)
         end
         -- 使用者和目标应该时友好关系
         if si.target_logic_by_stand == 0 then
-            if rMe:IsFriend(pObj) then
+            if not rMe:IsFriend(pObj) then
                 params:SetErrCode(C.OR_INVALID_TARGET)
                 params:SetErrParam(0)
                 return false
@@ -353,6 +353,8 @@ function SkillLogic_T:Action_ActivateOnceHandler(rMe)
             params:SetDelayTime(params:GetDelayTime() + si.delay_time)
             self:ActivateOnce(rMe)
         end
+        Log.back(true)
+        return true
     end
     Log.back(false)
     return false
