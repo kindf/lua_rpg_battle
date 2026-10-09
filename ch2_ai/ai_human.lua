@@ -213,6 +213,7 @@ function AI_Human:CheckTargetValid(nSkillID, TargetID)
 
         return false
     end
+    return true
 end
 
 -- 战斗心跳
