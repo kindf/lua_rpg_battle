@@ -3,6 +3,7 @@ local C = require("shared.constants")
 local Log = require("shared.log")
 local class = require("shared.class").class
 
+---@class State
 local State = class("State")
 
 function State:_init(state_id)
@@ -27,7 +28,7 @@ function State:UseSkill(pAI, idSkill, nLevel, idTarget, fTargetX, fTargetZ, fDir
     end
 
     local pCharacter = pAI:GetCharacter()
-    if pCharacter:GetObjType() == C.OBJ_TYPE_HUMAN then
+    if pCharacter:GetObjType() == C.OBJ_TYPE.HUMAN then
         Log.msg("Human: 不直接执行 -> 交由技能队列")
         Log.back(C.OR_OK)
         return C.OR_OK

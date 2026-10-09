@@ -216,6 +216,7 @@ def_skill({
     id = 1001, name = "烈焰弹", menpai = 0, skill_class = 1, class_by_user = 0,
     passive_flag = 0, select_type = C.SELECT_TYPE.CHARACTER, stand_flag = -1,
     is_auto_shot_skill = false, can_interrupt_auto_shot = 1, must_use_weapon = false,
+    target_must_in_special_state = 0,
 }, {
     { level = 1, logic_id = 1, skill_type = C.SKILL_INSTANT_LAUNCHING,
       delay_time = 100, cooldown_id = 101, cooldown_time = 1500, play_action_time = 800,
@@ -230,6 +231,7 @@ def_skill({
     id = 1002, name = "三连斩", menpai = 0, skill_class = 1, class_by_user = 0,
     passive_flag = 0, select_type = C.SELECT_TYPE.CHARACTER, stand_flag = -1,
     is_auto_shot_skill = false, can_interrupt_auto_shot = 1, must_use_weapon = false,
+    target_must_in_special_state = 0,
 }, {
     { level = 1, logic_id = 1, skill_type = C.SKILL_INSTANT_LAUNCHING,
       delay_time = 80, cooldown_id = 102, cooldown_time = 2000, play_action_time = 600,
@@ -244,6 +246,7 @@ def_skill({
     id = 1003, name = "聚气术", menpai = 0, skill_class = 1, class_by_user = 0,
     passive_flag = 0, select_type = C.SELECT_TYPE.SELF, stand_flag = -1,
     is_auto_shot_skill = false, can_interrupt_auto_shot = 1, must_use_weapon = false,
+    target_must_in_special_state = -1,
 }, {
     { level = 1, logic_id = 1, skill_type = C.SKILL_NEED_CHARGING,
       charge_time = 2000, cooldown_id = 103, cooldown_time = 3000, play_action_time = 500,
@@ -259,6 +262,7 @@ def_skill({
     id = 1004, name = "引导箭", menpai = 0, skill_class = 1, class_by_user = 0,
     passive_flag = 0, select_type = C.SELECT_TYPE.CHARACTER, stand_flag = -1,
     is_auto_shot_skill = false, can_interrupt_auto_shot = 1, must_use_weapon = false,
+    target_must_in_special_state = 0,
 }, {
     { level = 1, logic_id = 1, skill_type = C.SKILL_NEED_CHANNELING,
       channel_time = 3000, cooldown_id = 104, cooldown_time = 1000, play_action_time = 400,
@@ -273,6 +277,7 @@ def_skill({
     id = 1005, name = "火雨", menpai = 0, skill_class = 1, class_by_user = 0,
     passive_flag = 0, select_type = C.SELECT_TYPE.POS, stand_flag = -1,
     is_auto_shot_skill = false, can_interrupt_auto_shot = 1, must_use_weapon = false,
+    target_must_in_special_state = -1,
 }, {
     { level = 1, logic_id = 1, skill_type = C.SKILL_INSTANT_LAUNCHING,
       delay_time = 200, cooldown_id = 105, cooldown_time = 4000, play_action_time = 1000,
@@ -288,6 +293,7 @@ def_skill({
     id = 1006, name = "连射", menpai = 0, skill_class = 1, class_by_user = 0,
     passive_flag = 0, select_type = C.SELECT_TYPE.CHARACTER, stand_flag = -1,
     is_auto_shot_skill = true, can_interrupt_auto_shot = 1, must_use_weapon = false,
+    target_must_in_special_state = 0,
 }, {
     { level = 1, logic_id = 1, skill_type = C.SKILL_INSTANT_LAUNCHING,
       delay_time = 50, cooldown_id = 106, cooldown_time = 500, play_action_time = 300,
@@ -302,6 +308,7 @@ def_skill({
     id = 1007, name = "治疗术", menpai = 0, skill_class = 1, class_by_user = 0,
     passive_flag = 0, select_type = C.SELECT_TYPE.CHARACTER, stand_flag = 1,
     is_auto_shot_skill = false, can_interrupt_auto_shot = 1, must_use_weapon = false,
+    target_must_in_special_state = 0,
 }, {
     { level = 1, logic_id = 1, skill_type = C.SKILL_INSTANT_LAUNCHING,
       delay_time = 0, cooldown_id = 107, cooldown_time = 2000, play_action_time = 700,

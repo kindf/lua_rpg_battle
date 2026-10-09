@@ -166,14 +166,16 @@ function SkillLogic_T:TargetCheckForActivateOnce(rMe)
             params:SetErrParam(0)
             return false
         end
+        -- 使用者和目标应该时友好关系
         if si.target_logic_by_stand == 0 then
-            if rMe:IsEnemy(pObj) then
+            if rMe:IsFriend(pObj) then
                 params:SetErrCode(C.OR_INVALID_TARGET)
                 params:SetErrParam(0)
                 return false
             end
+        -- 使用者和目标应该时敌对关系
         elseif si.target_logic_by_stand == 1 then
-            if not rMe:IsFriend(pObj) then
+            if not rMe:IsEnemy(pObj) then
                 params:SetErrCode(C.OR_INVALID_TARGET)
                 params:SetErrParam(0)
                 return false

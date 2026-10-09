@@ -1,7 +1,7 @@
 -- 运行：  lua main.lua    (或 luajit main.lua)
 package.cpath = package.cpath .. ";c:/Users/QQ/.vscode/extensions/tangzx.emmylua-0.9.41-win32-x64/debugger/emmy/windows/x64/?.dll"
 local dbg = require("emmy_core")
--- dbg.tcpConnect("localhost", 9966)
+dbg.tcpConnect("localhost", 9966)
 
 local function script_dir()
     local str = debug.getinfo(1, "S").source:sub(2)

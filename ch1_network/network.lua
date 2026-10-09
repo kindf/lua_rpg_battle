@@ -61,7 +61,7 @@ function Handler.Execute(pPacket, pPlayer)
         return C.PACKET_EXE_CONTINUE
     end
 
-    local pScene = pHuman:getScene()
+    local pScene = pHuman:GetScene()
     if pScene == nil then
         Log.error("pScene == NULL")
         Log.back(C.PACKET_EXE_CONTINUE)

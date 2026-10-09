@@ -60,7 +60,7 @@ function Obj_Character:GetID() return self.id end
 function Obj_Character:GetName() return self.name end
 function Obj_Character:GetObjType() return self.obj_type end
 function Obj_Character:GetLevel() return self.level end
-function Obj_Character:getScene() return self.scene end
+function Obj_Character:GetScene() return self.scene end
 function Obj_Character:getWorldPos() return self.position end
 function Obj_Character:IsCharacter() return true end
 function Obj_Character:IsAlive() return self.alive end

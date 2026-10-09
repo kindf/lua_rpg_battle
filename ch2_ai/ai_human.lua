@@ -25,19 +25,22 @@ function UseSkillParam:CleanUp()
     self.m_nAutoShotTargetObjID = C.INVALID_ID
 end
 
+---@class UseItemParam
 local UseItemParam = class("UseItemParam")
 function UseItemParam:_init()
     self:CleanUp()
 end
 
 function UseItemParam:CleanUp()
-    self.m_BagInddex = C.INVALID_ID
+    self.m_BagIndex = C.INVALID_ID
 end
 
+---@class AI_Character
 local AI_Character = class("AI_Character")
 
 function AI_Character:_init(pCharacter)
     self.m_pCharacter = pCharacter
+    ---@type State
     self._state = StateMod.g_StateList:InstanceState(C.ESTATE.IDLE)
 end
 
@@ -79,17 +82,48 @@ function AI_Character:Logic(uTime)
     return self._state:Logic(self, uTime)
 end
 
-function AI_Character:IsEnterCombatState()
-    return self._state:GetStateID() == C.ESTATE.COMBAT
-end
 --------------------------------------------------------------
 --- AI_Hunam
 --- --------------------------------------------------------------
+---@class AI_Human:AI_Character
 local AI_Human = class("AI_Human", AI_Character)
 function AI_Human:_init(pCharacter)
     self.__base._init(self, pCharacter)
     self.m_paramAI_UseSkill = UseSkillParam.new()
     self.m_paramAI_UseItem = UseItemParam.new()
+end
+
+function AI_Human:IsEnterCombatState(idSkill, nLevel, idTarget)
+    local pCharacter = self:GetCharacter()
+    if not pCharacter then
+        return false
+    end
+
+    if idSkill == C.INVALID_SKILL_ID then
+        self.m_paramAI_UseSkill:CleanUp()
+        return false
+    end
+
+    if not pCharacter:IsAlive() then
+        return false
+    end
+
+    local pSkill = Data.g_SkillTemplateDataMgr:GetInstanceByID(idSkill)
+    if not pSkill then
+        return false
+    end
+    if idTarget ~= C.INVALID_ID then
+        pCharacter:SetLockedTarget(idTarget)
+    end
+
+    if pSkill:IsAutoShotSkill() and pCharacter:GetObjType() == C.OBJ_TYPE.HUMAN then
+        self.m_paramAI_UseSkill.m_nAutoShotSkill = idSkill
+        self.m_paramAI_UseSkill.m_nSkillLevel = nLevel
+        self.m_paramAI_UseSkill.m_nAutoShotTargetObjID = idTarget
+        return true
+    end
+
+    return false
 end
 
 function AI_Human:PushCommand_UseSkill(idSkill, nLevel, idTarget, fTargetX, fTargetZ, fDir, guidTarget)
@@ -115,7 +149,7 @@ end
 
 function AI_Human:PushSkillToQueue(idSkill, nLevel, idTarget, fTargetX, fTargetZ, fDir, guidTarget)
     Log.fn("AI_Hunam::PushSkillToQueue", string.format("skill=%s", idSkill))
-    local pSkill = Data.g_SkillTemplateDataMgr:GetInnstanceByID(idSkill)
+    local pSkill = Data.g_SkillTemplateDataMgr:GetInstanceByID(idSkill)
     if pSkill == nil then
         Log.back(nil)
         return
@@ -123,7 +157,7 @@ function AI_Human:PushSkillToQueue(idSkill, nLevel, idTarget, fTargetX, fTargetZ
 
     local pCharacter = self:GetCharacter()
     if pCharacter then
-        local rParams = pCharacter:GetTragetingAndDepletingParams()
+        local rParams = pCharacter:GetTargetingAndDepletingParams()
         if not g_ActionDelegator:CanDoNextAction(pCharacter) then
             if idSkill == rParams:GetActivatedSkill() then
                 Log.msg("过滤掉重复按键")
@@ -151,13 +185,13 @@ function AI_Human:PushSkillToQueue(idSkill, nLevel, idTarget, fTargetX, fTargetZ
 end
 
 function AI_Human:CheckTargetValid(nSkillID, TargetID)
-    local tmpl = Data.g_SkillTemplateDataMgr:GetInnstanceByID(nSkillID)
+    local tmpl = Data.g_SkillTemplateDataMgr:GetInstanceByID(nSkillID)
     if tmpl == nil then
         return false
     end
 
     if tmpl:GetSelectType() == C.SELECT_TYPE.CHARACTER then
-        local pObj = self:GetCharacter():GetSpecificObjInSameSceneById(TargetID)
+        local pObj = self:GetCharacter():GetSpecificObjInSameSceneByID(TargetID)
         if pObj == nil then
             return false
         end
@@ -206,7 +240,7 @@ function AI_Human:AI_Logic_Combat(uTime)
                 return
             end
 
-            if not rMe:Skill_IsSkillCoolDowned(nQueuedSkill) then
+            if not rMe:Skill_IsSkillCooldowned(nQueuedSkill) then
                 rMe:SendOperateResultMsg(C.OR_COOL_DOWNING)
                 self.m_paramAI_UseSkill.m_nQueueSkill = C.INVALID_SKILL_ID
                 Log.back(nil)
@@ -241,7 +275,7 @@ function AI_Human:AI_Logic_Combat(uTime)
                 Log.back(nil)
                 return
             end
-            if not rMe:Skill_IsSkillCoolDowned(nAutoActivedSkill) then
+            if not rMe:Skill_IsSkillCooldowned(nAutoActivedSkill) then
                 Log.back(nil)
                 return
             end

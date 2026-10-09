@@ -6,7 +6,7 @@ local Targeting = {}
 
 -- hostile=true 只取敌人；hostile=false 只取友军
 local function ScanUnitForTarget(rMe, x, z, rTargets, radius, hostile)
-    local scene = rMe:getScene()
+    local scene = rMe:GetScene()
     local objs = scene:GetObjManager():GetAll()
     for _, obj in ipairs(objs) do
         if obj ~= rMe and obj:IsCharacter() and obj:IsAlive() then
